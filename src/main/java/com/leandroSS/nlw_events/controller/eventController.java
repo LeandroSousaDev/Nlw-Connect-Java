@@ -6,6 +6,7 @@ import com.leandroSS.nlw_events.service.EventService;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,5 +24,15 @@ public class eventController {
     @GetMapping("/")
     public List<Event> getallEvents() {
         return eventService.getAllEvent();
+    }
+
+    @GetMapping("/{prettyName}")
+    public ResponseEntity<Event> findByPrettyname(@PathVariable String prettyName) {
+        var event = eventService.getByPrettyName(prettyName);
+
+        if (event != null) {
+            return ResponseEntity.ok().body(event);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
