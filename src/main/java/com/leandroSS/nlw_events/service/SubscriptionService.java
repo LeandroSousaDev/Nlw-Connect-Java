@@ -9,6 +9,7 @@ import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 import com.leandroSS.nlw_events.exception.EventNotFoundException;
 import com.leandroSS.nlw_events.exception.SubscriptionConflitException;
+import com.leandroSS.nlw_events.exception.UserIndicadorNotFoundException;
 import com.leandroSS.nlw_events.repository.EventRepository;
 import com.leandroSS.nlw_events.repository.SubscriptionRepository;
 import com.leandroSS.nlw_events.repository.UserRepository;
@@ -25,7 +26,7 @@ public class SubscriptionService {
     @Autowired
     EventRepository eventRepository;
 
-    public SubscriptionResponse createSubscription(String eventName, User user) {
+    public SubscriptionResponse createSubscription(String eventName, User user, Integer userId) {
 
         Event event = eventRepository.findByPrettyName(eventName);
 
@@ -39,9 +40,16 @@ public class SubscriptionService {
             userExists = userRepository.save(user);
         }
 
+        User indicador = userRepository.findById(userId).orElse(null);
+
+        if (indicador == null) {
+            throw new UserIndicadorNotFoundException("usuario " + userId + " indicador");
+        }
+
         Subscription subscription = new Subscription();
         subscription.setEvent(event);
         subscription.setSubscriber(userExists);
+        subscription.setIndication(indicador);
 
         Subscription subscriptionExists = subscriptionRepository.findByEventAndSubscriber(event, userExists);
         if (subscriptionExists != null) {

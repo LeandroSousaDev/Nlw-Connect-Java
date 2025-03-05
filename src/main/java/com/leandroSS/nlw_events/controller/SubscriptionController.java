@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.leandroSS.nlw_events.dto.ErrorMessage;
 import com.leandroSS.nlw_events.dto.SubscriptionResponse;
-import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 import com.leandroSS.nlw_events.exception.EventNotFoundException;
 import com.leandroSS.nlw_events.exception.SubscriptionConflitException;
+import com.leandroSS.nlw_events.exception.UserIndicadorNotFoundException;
 import com.leandroSS.nlw_events.service.SubscriptionService;
 
 @RestController
@@ -23,22 +23,27 @@ public class SubscriptionController {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    @PostMapping("/{prettyName}")
+    @PostMapping({ "/{prettyName}", "/{prettyName}/{userId}" })
     public ResponseEntity<?> createSubscription(
             @PathVariable String prettyName,
-            @RequestBody User subscriber) {
+            @RequestBody User subscriber,
+            @PathVariable(required = false) Integer userId) {
 
         try {
-            SubscriptionResponse result = subscriptionService.createSubscription(prettyName, subscriber);
+            SubscriptionResponse result = subscriptionService.createSubscription(prettyName, subscriber, userId);
 
             if (result != null) {
                 return ResponseEntity.ok().body(result);
             }
+
         } catch (EventNotFoundException ex) {
             return ResponseEntity.status(404).body(new ErrorMessage(ex.getMessage()));
 
         } catch (SubscriptionConflitException ex) {
             return ResponseEntity.status(409).body(new ErrorMessage(ex.getMessage()));
+
+        } catch (UserIndicadorNotFoundException ex) {
+            return ResponseEntity.status(404).body(new ErrorMessage(ex.getMessage()));
         }
 
         return ResponseEntity.badRequest().build();
