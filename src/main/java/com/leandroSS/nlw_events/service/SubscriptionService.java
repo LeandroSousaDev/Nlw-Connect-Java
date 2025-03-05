@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.leandroSS.nlw_events.entity.Event;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
+import com.leandroSS.nlw_events.exception.EventNotFoundException;
 import com.leandroSS.nlw_events.repository.EventRepository;
 import com.leandroSS.nlw_events.repository.SubscriptionRepository;
 import com.leandroSS.nlw_events.repository.UserRepository;
@@ -25,6 +26,10 @@ public class SubscriptionService {
     public Subscription createSubscription(String eventName, User user) {
 
         Event event = eventRepository.findByPrettyName(eventName);
+
+        if (event == null) {
+            throw new EventNotFoundException("event " + eventName + " não existe");
+        }
 
         User userExists = userRepository.findByEmail(user.getEmail());
 
