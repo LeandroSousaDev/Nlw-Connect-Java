@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leandroSS.nlw_events.dto.ErrorMessage;
+import com.leandroSS.nlw_events.dto.SubscriptionResponse;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 import com.leandroSS.nlw_events.exception.EventNotFoundException;
@@ -28,7 +29,7 @@ public class SubscriptionController {
             @RequestBody User subscriber) {
 
         try {
-            Subscription result = subscriptionService.createSubscription(prettyName, subscriber);
+            SubscriptionResponse result = subscriptionService.createSubscription(prettyName, subscriber);
 
             if (result != null) {
                 return ResponseEntity.ok().body(result);

@@ -3,6 +3,7 @@ package com.leandroSS.nlw_events.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.leandroSS.nlw_events.dto.SubscriptionResponse;
 import com.leandroSS.nlw_events.entity.Event;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
@@ -24,7 +25,7 @@ public class SubscriptionService {
     @Autowired
     EventRepository eventRepository;
 
-    public Subscription createSubscription(String eventName, User user) {
+    public SubscriptionResponse createSubscription(String eventName, User user) {
 
         Event event = eventRepository.findByPrettyName(eventName);
 
@@ -49,7 +50,9 @@ public class SubscriptionService {
         }
 
         Subscription result = subscriptionRepository.save(subscription);
-        return result;
+        return new SubscriptionResponse(
+                result.getSubscriptionNumber(),
+                "https://codecraft.com/" + result.getEvent().getPrettyName() + "/" + result.getSubscriber().getId());
 
     }
 
