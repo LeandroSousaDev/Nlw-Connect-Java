@@ -26,11 +26,15 @@ public class SubscriptionService {
 
         Event event = eventRepository.findByPrettyName(eventName);
 
-        user = userRepository.save(user);
+        User userExists = userRepository.findByEmail(user.getEmail());
+
+        if (userExists == null) {
+            userExists = userRepository.save(user);
+        }
 
         Subscription subscription = new Subscription();
         subscription.setEvent(event);
-        subscription.setSubscriber(user);
+        subscription.setSubscriber(userExists);
 
         Subscription result = subscriptionRepository.save(subscription);
         return result;
