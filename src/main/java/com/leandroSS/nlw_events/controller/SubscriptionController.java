@@ -12,6 +12,7 @@ import com.leandroSS.nlw_events.dto.ErrorMessage;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 import com.leandroSS.nlw_events.exception.EventNotFoundException;
+import com.leandroSS.nlw_events.exception.SubscriptionConflitException;
 import com.leandroSS.nlw_events.service.SubscriptionService;
 
 @RestController
@@ -34,7 +35,11 @@ public class SubscriptionController {
             }
         } catch (EventNotFoundException ex) {
             return ResponseEntity.status(404).body(new ErrorMessage(ex.getMessage()));
+
+        } catch (SubscriptionConflitException ex) {
+            return ResponseEntity.status(409).body(new ErrorMessage(ex.getMessage()));
         }
+
         return ResponseEntity.badRequest().build();
 
     }

@@ -7,6 +7,7 @@ import com.leandroSS.nlw_events.entity.Event;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 import com.leandroSS.nlw_events.exception.EventNotFoundException;
+import com.leandroSS.nlw_events.exception.SubscriptionConflitException;
 import com.leandroSS.nlw_events.repository.EventRepository;
 import com.leandroSS.nlw_events.repository.SubscriptionRepository;
 import com.leandroSS.nlw_events.repository.UserRepository;
@@ -40,6 +41,12 @@ public class SubscriptionService {
         Subscription subscription = new Subscription();
         subscription.setEvent(event);
         subscription.setSubscriber(userExists);
+
+        Subscription subscriptionExists = subscriptionRepository.findByEventAndSubscriber(event, userExists);
+        if (subscriptionExists != null) {
+            throw new SubscriptionConflitException("Ja existe uma inscrição para o usuario "
+                    + userExists.getName() + " no evento " + event.getTitle());
+        }
 
         Subscription result = subscriptionRepository.save(subscription);
         return result;
