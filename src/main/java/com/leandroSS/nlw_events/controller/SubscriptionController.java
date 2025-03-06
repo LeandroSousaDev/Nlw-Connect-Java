@@ -55,7 +55,7 @@ public class SubscriptionController {
     public ResponseEntity<?> generateRanking(@PathVariable String prettyName) {
 
         try {
-            return ResponseEntity.ok().body(subscriptionService.getCompleteRank(prettyName));
+            return ResponseEntity.ok().body(subscriptionService.getCompleteRank(prettyName).subList(0, 3));
         } catch (EventNotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
         }

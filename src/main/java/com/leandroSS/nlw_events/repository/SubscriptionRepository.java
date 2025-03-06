@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.leandroSS.nlw_events.dto.SubscriptionRankItem;
@@ -12,7 +11,7 @@ import com.leandroSS.nlw_events.entity.Event;
 import com.leandroSS.nlw_events.entity.Subscription;
 import com.leandroSS.nlw_events.entity.User;
 
-public interface SubscriptionRepository extends CrudRepository<Subscription, Integer> {
+public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
     public Subscription findByEventAndSubscriber(Event event, User user);
 
     @Query(value = """
