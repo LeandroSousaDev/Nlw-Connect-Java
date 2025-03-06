@@ -1,8 +1,11 @@
 package com.leandroSS.nlw_events.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.leandroSS.nlw_events.dto.SubscriptionRankItem;
 import com.leandroSS.nlw_events.dto.SubscriptionResponse;
 import com.leandroSS.nlw_events.entity.Event;
 import com.leandroSS.nlw_events.entity.Subscription;
@@ -40,7 +43,11 @@ public class SubscriptionService {
             userExists = userRepository.save(user);
         }
 
-        User indicador = userRepository.findById(userId).orElse(null);
+        User indicador = null;
+
+        if (userId != null) {
+            indicador = userRepository.findById(userId).orElse(null);
+        }
 
         if (indicador == null) {
             throw new UserIndicadorNotFoundException("usuario " + userId + " indicador");
@@ -62,6 +69,17 @@ public class SubscriptionService {
                 result.getSubscriptionNumber(),
                 "https://codecraft.com/" + result.getEvent().getPrettyName() + "/" + result.getSubscriber().getId());
 
+    }
+
+    public List<SubscriptionRankItem> getCompleteRank(String prettyName) {
+
+        Event event = eventRepository.findByPrettyName(prettyName);
+
+        if (event == null) {
+            throw new EventNotFoundException("Evento " + prettyName + " não existe");
+        }
+
+        return subscriptionRepository.generateRancking(event.getEventId());
     }
 
 }
