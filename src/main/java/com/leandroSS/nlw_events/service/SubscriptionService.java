@@ -1,10 +1,12 @@
 package com.leandroSS.nlw_events.service;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.leandroSS.nlw_events.dto.SubscriptionRankByUser;
 import com.leandroSS.nlw_events.dto.SubscriptionRankItem;
 import com.leandroSS.nlw_events.dto.SubscriptionResponse;
 import com.leandroSS.nlw_events.entity.Event;
@@ -82,4 +84,20 @@ public class SubscriptionService {
         return subscriptionRepository.generateRancking(event.getEventId());
     }
 
+    public SubscriptionRankByUser getRankUser(String prettyName, Integer userId) {
+        List<SubscriptionRankItem> ranking = getCompleteRank(prettyName);
+
+        SubscriptionRankItem item = ranking.stream()
+                .filter(i -> i.userId().equals(userId)).findFirst().orElse(null);
+
+        if (item == null) {
+            throw new UserIndicadorNotFoundException("não há inscrições com indicação do usuario " + userId);
+        }
+
+        Integer position = IntStream.range(0, ranking.size())
+                .filter(p -> ranking.get(p).userId().equals(userId))
+                .findFirst().getAsInt();
+
+        return new SubscriptionRankByUser(item, position + 1);
+    }
 }

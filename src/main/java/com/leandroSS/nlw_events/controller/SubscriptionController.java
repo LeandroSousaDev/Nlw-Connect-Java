@@ -55,8 +55,20 @@ public class SubscriptionController {
     public ResponseEntity<?> generateRanking(@PathVariable String prettyName) {
 
         try {
-            return ResponseEntity.ok().body(subscriptionService.getCompleteRank(prettyName).subList(0, 3));
+            return ResponseEntity.ok().body(subscriptionService.getCompleteRank(prettyName)
+                    .subList(0, 3));
         } catch (EventNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{prettyName}/ranking/{userId}")
+    public ResponseEntity<?> generateRankingByEventAndUser(@PathVariable String prettyName,
+            @PathVariable Integer userId) {
+
+        try {
+            return ResponseEntity.ok(subscriptionService.getRankUser(prettyName, userId));
+        } catch (Exception e) {
             return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
         }
     }
