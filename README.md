@@ -10,6 +10,13 @@
 http://localhost:8080/swagger-ui/index.html#/
 ~~~
 
+## Requisitos:
+### Para execulta esse projeto voce precisar ter intalado em sua maquina:
+
+* Java JDk 17 ou superior
+* Docker
+* Imagem docker do PostgreSQL
+* Postman ou Insominia
 
 ## Tecnologia usadas
 
